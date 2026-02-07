@@ -62,28 +62,76 @@ int uart_atoi(const char *s) {
 float uart_atof(const char *s) {
     float res = 0.0, factor = 1.0;
     int i = 0, dot_found = 0;
-    if (s[i] == '-') { factor = -1.0; i++; }
+
+    if (s[i] == '-') { 
+        factor = -1.0; i++; 
+    }
+    //uart_putc(s[i]);
     for (; s[i]; i++) {
-        if (s[i] == '.') { dot_found = 1; continue; }
+        // Encuentra el punto
+        if (s[i] == '.') { 
+            dot_found = 1; continue; 
+        }
+
+        // Convierte ascii a al valor del numero
         int digit = s[i] - '0';
         if (digit >= 0 && digit <= 9) {
-            if (!dot_found) res = res * 10.0 + digit;
-            else { factor /= 10.0; res += digit * factor; }
+            if (!dot_found) {
+                res = res * 10.0 + digit;
+            } else { 
+                factor /= 10.0; 
+                res += digit * factor; 
+            }
         }
     }
     return res;
 }
 
 void uart_ftoa(float n, char *res, int afterpoint) {
-    int ipart = (int)n;
-    float fpart = n - (float)ipart;
-    if (fpart < 0) fpart = -fpart;
-    uart_itoa(ipart, res);
+    // Manejo de signo para el número completo
+    if (n < 0) {
+        *res++ = '-';
+        n = -n;
+    }
+
+    int parteInt = (int)n;
+    float parteFloat = n - (float)parteInt;
+
+    // Convertir parte entera
+    uart_itoa(parteInt, res);
+
+    // Mover el puntero al final de la parte entera
     int i = 0;
     while (res[i] != '\0') i++;
+
     if (afterpoint != 0) {
-        res[i] = '.';
-        for (int j = 0; j < afterpoint; j++) fpart *= 10;
-        uart_itoa((int)fpart, res + i + 1);
+        res[i++] = '.';
+
+        // Calcular el factor de escala
+        int scale = 1;
+        for (int j = 0; j < afterpoint; j++) {
+            scale *= 10;
+        }
+
+        // convertir a entero y 0.5f para redondear
+        int f_int = (int)(parteFloat * scale + 0.5f);
+
+        // 0s a la izquierda
+        int temp_scale = scale / 10;
+        while (temp_scale > 0) {
+            if (f_int < temp_scale) {
+                res[i++] = '0';
+                temp_scale /= 10;
+            } else {
+                break; 
+            }
+        }
+
+        // Convertir el valor numérico restante
+        if (f_int != 0) {
+            uart_itoa(f_int, res + i);
+        } else {
+            res[i] = '\0';
+        }
     }
 }

@@ -40,7 +40,7 @@ Para que el sistema funcione, el script de construcción (`build_and_run.sh`) in
 
 ## Lab en funcionamiento.
 
-![alt text](image.png)
+![alt text](image-1.png)
 
 
 

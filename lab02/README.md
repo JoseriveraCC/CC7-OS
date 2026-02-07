@@ -35,9 +35,12 @@ El software se ha estructurado en tres niveles de abstracción para garantizar l
 
 ## 🔧 Detalles de Compilación (Solución de errores AEABI)
 
-Dado que el procesador ARM926EJ-S emulado no posee una unidad de punto flotante (FPU) activa o instrucciones directas de división, el compilador genera llamadas a funciones de ayuda (helper functions) conocidas como **AEABI** (ARM Embedded Application Binary Interface).
-
 Para que el sistema funcione, el script de construcción (`build_and_run.sh`) incluye el flag `-lgcc` y vincula mediante `gcc` en lugar de `ld` directamente. Esto permite que operaciones como `num1 / num2` sean procesadas correctamente por software.
+
+
+## Lab en funcionamiento.
+
+![alt text](image.png)
 
 
 

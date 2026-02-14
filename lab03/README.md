@@ -35,7 +35,7 @@ El sistema consta de dos hilos de ejecución:
     * Transferir `program.bin` usando protocolo **YMODEM**.
     * Ejecutar: `go 0x82000000`.
 
-![alt text](/imagenes/image.png)
+![alt text](imagenes/image.png)
 
 ## 📋 Requisitos
 * Toolchain: `arm-none-eabi-gcc`

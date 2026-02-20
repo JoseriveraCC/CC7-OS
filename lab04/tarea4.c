@@ -7,9 +7,8 @@ int main() {
 
     for (int i = 1; i <= 3; i++) {
         if (fork() == 0) {
-            // Código exclusivo para el hijo
             printf("Child %d: PID=%d, Parent PID=%d\n", i, getpid(), getppid());
-            return 0; // El hijo debe salir del programa para no crear sus propios hijos
+            return 0; // Salimos para no crear mas hijos
         }
     }
 

@@ -5,7 +5,7 @@
 
 int main() {
     int fd[2]; // fd[0] es para leer, fd[1] es para escribir
-    pipe(fd);  // Crear el pipe
+    pipe(fd); 
     char buffer[100];
 
     pid_t pid = fork();

@@ -18,18 +18,18 @@ int main() {
         printf("Error al crear el proceso.\n");
         return 1;
     } else if (pid == 0) {
-        // Proceso Hijo: Lee de la memoria compartida
+        // Hijo lee de la memoria compartida
         sleep(1); // Breve pausa para asegurar que el padre escriba primero
         printf("Child Process: Read \"%s\"\n", str);
         
         // Desvincular la memoria en el hijo
         shmdt(str);
     } else {
-        // Proceso Padre: Escribe en la memoria compartida
+        // Padre escribe en la memoria compartida
         strcpy(str, "Shared Memory Example");
         printf("Parent Process: Writing \"%s\"\n", str);
         
-        wait(NULL); // Espera a que el hijo lea
+        wait(NULL); // Esoeramos
         
         // Desvincular y destruir la memoria compartida
         shmdt(str);

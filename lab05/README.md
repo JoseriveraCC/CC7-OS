@@ -1,68 +1,68 @@
-# Multi-Threaded Web Log Analyzer
+# Analizador de Logs Web Multihilo
 
-A high-performance, parallelized log processing tool written in **C**. This project demonstrates the power of multi-threading and efficient data structures by analyzing millions of web server records to extract key statistics in seconds.
+Una herramienta de procesamiento de logs de alto rendimiento, paralelizada y escrita en **C**. Este proyecto demuestra el poder del multihilo (multi-threading) y de las estructuras de datos eficientes al analizar millones de registros de servidores web para extraer estadísticas clave en cuestión de segundos.
 
-## 🚀 Features
+## 🚀 Características
 
--   **Parallel Processing**: Utilizes the `pthread` library to divide a single large log file into chunks, processing them simultaneously across multiple CPU cores.
--   **Lock-Free Scalability**: Implements a "Shared-Nothing" architecture where each thread maintains its own local statistics, eliminating the need for expensive Mutex locks during the heavy processing phase.
--   **High-Speed Data Structures**: Uses custom-built **Hash Tables with Chaining** for O(1) average lookup and insertion of unique IP addresses and URLs.
--   **Map-Reduce Architecture**: Follows a classic Map-Reduce pattern where worker threads (Map) generate local results that are merged by the main thread (Reduce) at the end.
+-   **Procesamiento en Paralelo**: Utiliza la biblioteca `pthread` para dividir un archivo de log de gran tamaño en fragmentos (chunks), procesándolos simultáneamente en múltiples núcleos de CPU.
+-   **Escalabilidad sin Bloqueos**: Implementa una arquitectura "Shared-Nothing" donde cada hilo mantiene sus propias estadísticas locales, eliminando la necesidad de bloqueos Mutex costosos durante la fase de procesamiento intensivo.
+-   **Estructuras de Datos de Alta Velocidad**: Utiliza **Tablas Hash con Encadenamiento** (Hash Tables with Chaining) desarrolladas a medida para lograr tiempos de búsqueda e inserción de O(1) en promedio para IPs y URLs únicas.
+-   **Arquitectura Map-Reduce**: Sigue el patrón clásico de Map-Reduce, donde los hilos de trabajo (Map) generan resultados locales que son combinados por el hilo principal (Reduce) al final.
 
-## 📊 Analyzed Metrics
+## 📊 Métricas Analizadas
 
-The tool extracts the following information from `access.log` files:
-1.  **Total Unique IPs**: Counts how many distinct visitors accessed the server.
-2.  **Most Visited URL**: Identifies the most popular endpoint and the number of hits it received.
-3.  **HTTP Error Count**: Summarizes all requests that returned a 4xx or 5xx status code.
+La herramienta extrae la siguiente información de los archivos `access.log`:
+1.  **Total de IPs Únicas**: Cuenta cuántos visitantes distintos accedieron al servidor.
+2.  **URL más Visitada**: Identifica el endpoint más popular y el número de visitas que recibió.
+3.  **Conteo de Errores HTTP**: Resume todas las peticiones que devolvieron un código de estado 4xx o 5xx.
 
-## 🏗️ Architecture Overview
+## 🏗️ Descripción de la Arquitectura
 
-The program operates in three distinct phases:
+El programa opera en tres fases distintas:
 
-1.  **Partitioning**: The main thread calculates the file size and assigns byte-offsets to each worker thread.
-2.  **Parallel Processing**: Workers seek to their assigned offset and parse log lines into their private hash tables.
-3.  **Merging**: Once all workers finish, the main thread traverses the local hash tables and merges the results into a global structure for final reporting.
+1.  **Particionamiento**: El hilo principal calcula el tamaño del archivo y asigna los desplazamientos de bytes (offsets) a cada hilo de trabajo.
+2.  **Procesamiento en Paralelo**: Los hilos se posicionan en su desplazamiento asignado y analizan las líneas del log en sus tablas hash privadas.
+3.  **Fase de Mezcla (Merging)**: Una vez que todos los hilos terminan, el hilo principal recorre las tablas hash locales y las combina en una estructura global para el reporte final.
 
-> **Note on Data Integrity**: The analyzer includes logic to skip partial lines at the start of a chunk and read past the end of a chunk to ensure no log entry is counted twice or missed.
+> **Nota sobre Integridad de Datos**: El analizador incluye lógica para omitir líneas parciales al inicio de un fragmento y leer más allá del final del mismo, garantizando que ninguna entrada de log se cuente dos veces o se pierda.
 
-## 📂 Project Structure
+## 📂 Estructura del Proyecto
 
 ```text
-├── main_linux.c      # Thread orchestration and file partitioning
-├── log_processor.c   # Log parsing, hash table logic, and merging
-├── log_processor.h   # Data structures and function prototypes
-├── Makefile          # Automated build system
-├── run.sh            # Helper script to clean, build, and run
-└── access.log        # Sample log file for testing
+├── main_linux.c      # Orquestación de hilos y particionamiento de archivos
+├── log_processor.c   # Lógica de análisis de logs, tablas hash y mezcla
+├── log_processor.h   # Estructuras de datos y prototipos de funciones
+├── Makefile          # Sistema de construcción automatizado
+├── run.sh            # Script de ayuda para limpiar, compilar y ejecutar
+└── access.log        # Archivo de log de muestra para pruebas
 ```
 
-## 🛠️ How to Run
+## 🛠️ Cómo Ejecutar
 
-### Prerequisites
--   A Linux environment (or WSL on Windows).
--   `gcc` compiler.
--   `make` utility.
+### Prerrequisitos
+-   Un entorno Linux (o WSL en Windows).
+-   Compilador `gcc`.
+-   Utilidad `make`.
 
-### Compilation
-Build the project using the provided Makefile:
+### Compilación
+Construye el proyecto utilizando el Makefile proporcionado:
 ```bash
 make
 ```
 
-### Execution
-Run the analyzer by providing the path to a log file:
+### Ejecución
+Ejecuta el analizador proporcionando la ruta a un archivo de log:
 ```bash
 ./log_analyzer access.log
 ```
 
-Alternatively, use the helper script:
+Alternativamente, puedes usar el script de ayuda:
 ```bash
 ./run.sh
 ```
 
-## 📈 Performance Tip
-You can adjust the number of threads by changing the `NUM_THREADS` macro in `main_linux.c` to match your CPU's core count for maximum throughput.
+## 📈 Consejo de Rendimiento
+Puedes ajustar el número de hilos cambiando la macro `NUM_THREADS` en `main_linux.c` para que coincida con el número de núcleos de tu CPU y obtener el máximo rendimiento.
 
 ---
-*Developed as part of the CC7 Operating Systems Laboratory (Lab05).*
+*Desarrollado como parte del Laboratorio 05 de Sistemas Operativos CC7.*
